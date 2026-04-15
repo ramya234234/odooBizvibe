@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bizvibe_smart_ai_smart_search">
+
+<div class="bizvibe_layout" style="display:flex;height:100%;">
+
+    <!-- SIDEBAR -->
+    <div class="bizvibe_sidebar" style="width:220px;background:#fff;border-right:1px solid #e5e7eb;padding:15px;">
+
+        <div style="font-size:18px;font-weight:600;margin-bottom:20px;">
+            BizVibe AI
+        </div>
+
+        <div>
+
+            <!-- SMART SEARCH -->
+            <div t-on-click="() => this.switchTab('smartsearch')"
+                 t-att-class="state.activeTab === 'smartsearch' ? 'bizvibe_menu_item active' : 'bizvibe_menu_item'"
+                 style="padding:10px;border-radius:6px;margin-bottom:5px;cursor:pointer;">
+
+                <i class="fa fa-search"></i>
+                <span style="margin-left:10px;">Smart Search</span>
+
+            </div>
+
+            <!-- RFP -->
+            <div t-on-click="() => this.switchTab('rfp')"
+                 t-att-class="state.activeTab === 'rfp' ? 'bizvibe_menu_item active' : 'bizvibe_menu_item'"
+                 style="padding:10px;border-radius:6px;margin-bottom:5px;cursor:pointer;">
+
+                <i class="fa fa-file-text"></i>
+                <span style="margin-left:10px;">RFP</span>
+
+            </div>
+
+            <!-- RFI -->
+            <div t-on-click="() => this.switchTab('rfi')"
+                 t-att-class="state.activeTab === 'rfi' ? 'bizvibe_menu_item active' : 'bizvibe_menu_item'"
+                 style="padding:10px;border-radius:6px;margin-bottom:5px;cursor:pointer;">
+
+                <i class="fa fa-question-circle"></i>
+                <span style="margin-left:10px;">RFI</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTENT AREA -->
+    <div class="bizvibe_content" style="flex:1;padding:20px;overflow:auto;">
+
+        <!-- SMART SEARCH -->
+        <div t-if="state.activeTab === 'smartsearch'">
+
+            <div style="padding:20px;max-width:1200px;margin:0 auto;">
+
+                <!-- HEADER -->
+                <div style="background:linear-gradient(135deg,#7c7bad 0%,#6361a9 100%);
+                            color:white;padding:30px;border-radius:12px;margin-bottom:30px;text-align:center;">
+
+                    <h2 style="font-size:32px;margin-bottom:10px;color:white;font-weight:600;">
+                        BizVibe Smart AI Search
+                    </h2>
+
+                    <p style="font-size:18px;opacity:0.95;margin:0;">
+                        Find B2B companies using natural language
+                    </p>
+
+                </div>
+
+
+                <!-- SEARCH BOX -->
+                <div style="background:white;padding:25px;border-radius:12px;margin-bottom:30px;
+                            box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+
+                    <div style="display:flex;gap:15px;align-items:center;">
+
+                        <input type="text"
+                               t-model="state.searchQuery"
+                               t-on-keydown="_onSearchKeydown"
+                               placeholder="e.g., Software companies in Mumbai with 50+ employees"
+                               style="flex:1;padding:16px 20px;font-size:16px;
+                                      border:2px solid #e9ecef;border-radius:10px;" />
+
+                        <button t-on-click="_onSearch"
+                                t-att-disabled="state.isLoading"
+                                t-att-class="state.isLoading ? 'btn btn-secondary' : 'btn btn-primary'"
+                                style="padding:16px 32px;font-size:16px;border-radius:10px;">
+
+                            <i t-att-class="state.isLoading ? 'fa fa-spinner fa-spin' : 'fa fa-search'"></i>
+                            <span t-esc="state.isLoading ? ' Searching...' : ' Search'"></span>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- POPULAR SEARCH -->
+                    <div t-if="state.currentView !== 'results'" style="margin-top:20px;padding-top:20px;border-top:1px solid #e9ecef;">
+                        <!--  No Results  -->
+                    
+                        
+                        <p style="color:#6c757d;margin-bottom:12px;font-size:14px;">
+                            <i class="fa fa-clock-o"></i> Popular searches
+                        </p>
+
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+
+                            <t t-foreach="state.popularSearches"
+                               t-as="search"
+                               t-key="search">
+
+                                <button t-on-click="() => this._setQuery(search)"
+                                        style="background:#f8f9fa;border:1px solid #dee2e6;
+                                               border-radius:20px;padding:8px 16px;font-size:13px;">
+
+                                    <i class="fa fa-search" style="margin-right:5px;"></i>
+                                    <t t-esc="search"/>
+
+                                </button>
+
+                            </t>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Results Section -->
+                <div t-if="state.currentView === 'results'">
+                        <div t-if="!state.hasResults" style="text-align: center; padding: 60px 20px;">
+                            <i class="fa fa-building-o" style="font-size: 64px; color: #dee2e6; margin-bottom: 20px;"/>
+                            <h4 style="color: #495057; margin-bottom: 10px;">We are fetching the company details</h4>
+                            <p style="color: #6c757d;">Please wait while we fetch you the best result</p>
+                        </div>
+                    <div t-if="state.hasResults"  style="background:#f0f9ff;border-left:4px solid #7c7bad;padding:25px;margin-bottom:20px;margin-top:10px">
+                        
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <i class="fa fa-robot" style="color:#7c7bad;font-size:24px"></i>
+                                <h3 style="margin:0;color:#2c3e50;font-size:20px;font-weight:600">
+                                    AI Overview
+                                </h3>
+                            </div>
+
+                            <button t-on-click="() => this.state.aiOverviewExpanded = !this.state.aiOverviewExpanded"
+                                    style="background:none;border:none;color:#7c7bad;cursor:pointer">
+
+                                <i t-att-class="state.aiOverviewExpanded ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+
+                            </button>
+
+                        </div>
+
+                        <!-- AI explanation -->
+                        <div t-if="state.aiOverviewExpanded"
+                            t-raw="state.aiSummaryHtml"
+                            style="color:#334155;line-height:1.8;font-size:15px">
+                        </div>
+
+                        <div t-if="!state.aiOverviewExpanded"
+                            t-raw="state.aiSummaryShortHtml"
+                            style="color:#334155;line-height:1.8;font-size:15px">
+                        </div>
+
+                        <button t-if="state.hasResults" t-on-click="() => this.state.aiOverviewExpanded = !this.state.aiOverviewExpanded"
+                                style="background:none;border:none;color:#7c7bad;cursor:pointer">
+
+                            <t t-if="!state.aiOverviewExpanded">Show More</t>
+                            <t t-if="state.aiOverviewExpanded">Show Less</t>
+
+                        </button>
+
+                    </div>
+                    <div  style="padding: 20px;">
+                        
+                        <!--  Results Found  -->
+                        <div t-if="state.hasResults">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="color: #2c3e50; font-size: 20px; font-weight: 600;">
+                                <i class="fa fa-building"/>
+                                Found
+                                <span t-esc="state.results.length"/>
+                                companies
+                            </h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                            <t t-foreach="state.results" t-as="company" t-key="company.id">
+                                <div style="background: white; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                                    <h4 style="margin: 0; font-size: 18px; font-weight: 600; color: #2c3e50;">
+                                        <t t-esc="company.name"/>
+                                    </h4>
+                                    <span style="background: #e8f4fd; color: #0b5e8a; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                        <t t-esc="company.type"/>
+                                    </span>
+                                    </div>
+                                    <!-- <div style="margin-bottom: 15px;">
+                                    <p style="color: #4a5568; margin-bottom: 10px; line-height: 1.6; font-size: 14px;">
+                                        <t t-esc="company.description"/>
+                                    </p>
+                                    </div> -->
+                                    <div style="display: flex; gap: 15px; margin-bottom: 15px; color: #6c757d; font-size: 13px;">
+                                    <span>
+                                        <i class="fa fa-map-marker fa-padding"/>
+                                        <t t-esc="company.location"/>
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-users fa-padding"/>
+                                        <t t-esc="company.employees"/>
+                                        employees
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-dollar fa-padding"/>
+                                        <t t-esc="company.revenue"/>
+                                    </span>
+                                    </div>
+                                    <div style="display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e9ecef;">
+                                    <button t-on-click="() => this._viewCompanyProfile(company)" style="flex: 1; padding: 10px; background: #7c7bad; color: white; border: none; border-radius: 8px; font-weight: 500;">
+                                    <i class="fa fa-eye"/>
+                                    View Profile
+                                    </button>
+                                    <!-- <button t-on-click="() => this._importCompany(company, 'contact')" style="padding: 10px 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; color: #495057;">
+                                    <i class="fa fa-user-plus"/>
+                                    </button> -->
+                                    <button t-on-click="() => this._importCompany(company, 'lead')" style="padding: 10px 15px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; color: #495057;">
+                                    <i class="fa fa-bullhorn"/>
+                                    </button>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                
+                <!-- Company Profile View -->
+                <div t-if="state.currentView === 'profile'" style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; margin-top:15px">
+                    <!-- Profile Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <button t-on-click="_backToResults"
+                                style="background: none; border: none; color: #7c7bad; font-size: 16px; cursor: pointer;">
+                            <i class="fa fa-arrow-left"></i> Back to Results
+                        </button>
+                        <div>
+                            <!-- <button t-on-click="() => _importCompany(state.selectedCompany, 'contact')"
+                                    style="padding: 10px 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; margin-right: 10px;">
+                                <i class="fa fa-user-plus"></i> Add to Contacts
+                            </button> -->
+                            <button t-on-click="() =>this._importCompany(state.selectedCompany, 'lead')"
+                                    style="padding: 10px 20px; background: #7c7bad; color: white; border: none; border-radius: 8px;">
+                                <i class="fa fa-bullhorn"></i> Create Lead
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- <div style="text-align: center; padding: 60px;">
+                        <i class="fa fa-spinner fa-spin fa-3x" style="color: #7c7bad;"></i>
+                        <p style="margin-top: 20px; color: #6c757d;">Loading company profile...</p>
+                    </div> -->
+
+
+
+
+                    <!-- Show Profile when not loading -->
+                    <div t-if="!state.isLoading and state.companyProfile">
+                        <!-- Profile Header -->
+                        <div class="profile-header">
+                            <div class="container-fluid">
+                                <div class="row align-items-center">
+                                    <!-- <div class="col-auto">
+                                        <button class="btn btn-link text-muted p-0" t-on-click="_backToResults">
+                                            <i class="fa fa-arrow-left mr-2"></i>Back to Results
+                                        </button>
+                                    </div> -->
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <!-- Company Logo and Name -->
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-start">
+                                            <div class="company-logo-large-new mr-4">
+                                                <t t-if="state.companyProfile.basics.logo_url">
+                                                    <img t-att-src="state.companyProfile.basics.logo_url" alt="Company Logo" style="max-width: 80px; max-height: 80px;"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="company-logo-placeholder-new">
+                                                        <t t-esc="state.companyProfile.basics.organization_name ? state.companyProfile.basics.organization_name.charAt(0).toUpperCase() : 'C'"/>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h1 class="company-name-header mb-2">
+                                                    <t t-esc="state.companyProfile.basics.organization_name"/>
+                                                </h1>
+                                                
+                                                <!-- Quick Stats Pills -->
+                                                <div class="profile-quick-stats">
+                                                    <div class="stat-pill">
+                                                        <i class="fa fa-building-o mr-1"></i>
+                                                        <t t-esc="state.companyProfile.basics.company_type || 'Private'"/>
+                                                    </div>
+                                                    <div class="stat-pill">
+                                                        <i class="fa fa-users mr-1"></i>
+                                                        <t t-esc="state.companyProfile.basics.employees || 'N/A'"/>
+                                                    </div>
+                                                    <div class="stat-pill">
+                                                        <i class="fa fa-dollar mr-1"></i>
+                                                        <t t-esc="state.companyProfile.basics.revenue_range || 'N/A'"/>
+                                                    </div>
+                                                    <div class="stat-pill">
+                                                        <i class="fa fa-map-marker mr-1"></i>
+                                                        <t t-esc="state.companyProfile.basics.city + ', ' + state.companyProfile.basics.country"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Profile Score Gauge + Actions -->
+                                    <div class="col-md-4 text-right">
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <!-- Profile Completeness Gauge -->
+                                            <div class="profile-score-container mr-4">
+                                                <svg class="profile-score-gauge" width="120" height="120">
+                                                    <circle cx="60" cy="60" r="54" 
+                                                            fill="none" 
+                                                            stroke="#e2e8f0" 
+                                                            stroke-width="8"/>
+                                                    <circle cx="60" cy="60" r="54"
+                                                            fill="none"
+                                                            t-att-stroke="this._getScoreColor(this._getProfileScore(state.companyProfile)) === 'success' ? '#16a34a' : (this._getScoreColor(this._getProfileScore(state.companyProfile)) === 'warning' ? '#f59e0b' : '#ef4444')"
+                                                            stroke-width="8"
+                                                            stroke-linecap="round"
+                                                            t-att-stroke-dasharray="this._getScoreStrokeDasharray(this._getProfileScore(state.companyProfile))"
+                                                            t-att-stroke-dashoffset="this._getScoreStrokeDashoffset(this._getProfileScore(state.companyProfile))"
+                                                            transform="rotate(-90 60 60)"/>
+                                                </svg>
+                                                <div class="score-label" style="text-align: center;">
+                                                     Risk Score
+                                                </div>
+                                                <div class="score-label" style="text-align: center;">
+                                                    <t t-esc="state.companyProfile?.risk_score + ' /5' || 'N/A'"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Primary Action -->
+                                            <!-- <div>
+                                                <button class="btn btn-primary btn-lg" t-on-click="() =&gt; this._importCompany(state.selectedCompany, 'contact')">
+                                                    <i class="fa fa-user-plus mr-2"></i>Add to Contacts
+                                                </button>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Navigation -->
+                        <div class="profile-tabs">
+                            <div class="container-fluid">
+                                <div class="d-flex">
+                                    <div t-att-class="'profile-tab' + (state.profileActiveTab === 'overview' ? ' active' : '')" 
+                                         t-on-click="() =&gt; this._setProfileTab('overview')">
+                                        Basic Information
+                                    </div>
+                                    <div t-att-class="'profile-tab' + (state.profileActiveTab === 'contact' ? ' active' : '')"
+                                         t-on-click="() =&gt; this._setProfileTab('contact')">
+                                        Contact Info
+                                    </div>
+                                    <div t-att-class="'profile-tab' + (state.profileActiveTab === 'location' ? ' active' : '')"
+                                         t-on-click="() =&gt; this._setProfileTab('location')">
+                                        Company Location
+                                    </div>
+                                    <div t-att-class="'profile-tab' + (state.profileActiveTab === 'executives' ? ' active' : '')"
+                                         t-on-click="() =&gt; this._setProfileTab('executives')">
+                                        Key Executives
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content - Scrollable -->
+                        <div class="profile-content">
+                            <div class="container-fluid">
+                                
+                                <!-- OVERVIEW TAB -->
+                                <div t-if="state.profileActiveTab === 'overview'">
+                                    <!-- Company Overview -->
+                                    <div t-if="state.companyProfile.basics.overview" class="profile-section mb-4">
+                                        <h4 class="section-title mb-3">Company Overview</h4>
+                                        <p class="text-muted" style="line-height: 1.8; font-size: 0.95rem;">
+                                            <t t-esc="state.companyProfile.basics.overview"/>
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Products & Services -->
+                                    <div t-if="state.companyProfile.powerPhrase and state.companyProfile.powerPhrase.length > 0" class="profile-section mb-4">
+                                        <h4 class="section-title mb-3">
+                                            <i class="fa fa-tags text-primary mr-2"></i>Products &amp; Services
+                                        </h4>
+                                        <div class="d-flex flex-wrap">
+                                            <t t-foreach="state.companyProfile.powerPhrase" t-as="phrase" t-key="phrase.keywordId">
+                                                <span class="product-tag">
+                                                    <t t-esc="phrase.keyword"/>
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Industries -->
+                                    <div t-if="state.companyProfile.industries and state.companyProfile.industries.length > 0" class="profile-section mb-4">
+                                        <h4 class="section-title mb-3">
+                                            <i class="fa fa-industry text-primary mr-2"></i>Industries
+                                        </h4>
+                                        <div class="row">
+                                            <t t-foreach="state.companyProfile.industries" t-as="industry" t-key="industry.bv_l3_id">
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="industry-item">
+                                                        <div class="font-weight-bold" style="color: #1e293b;">
+                                                            <t t-esc="industry.bv_l3_name"/>
+                                                        </div>
+                                                        <div class="small text-muted">
+                                                            NAICS: <t t-esc="industry.bv_l3_nacis_id"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Company Details -->
+                                    <div class="profile-section">
+                                        <h4 class="section-title mb-3">Company Details</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="detail-item">
+                                                    <div class="detail-label">Website</div>
+                                                    <div class="detail-value">
+                                                        <a t-if="state.companyProfile.basics.organization_website" 
+                                                           t-att-href="'https://' + state.companyProfile.basics.organization_website" 
+                                                           target="_blank" 
+                                                           class="text-primary">
+                                                            <t t-esc="state.companyProfile.basics.organization_website"/>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="detail-item">
+                                                    <div class="detail-label">Headquarters</div>
+                                                    <div class="detail-value">
+                                                        <t t-esc="state.companyProfile.basics.headquarters || state.companyProfile.basics.city + ', ' + state.companyProfile.basics.country || 'N/A'"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="detail-item">
+                                                    <div class="detail-label">Address</div>
+                                                    <div class="detail-value">
+                                                        <t t-esc="state.companyProfile.basics.address1 || ''"/>
+                                                        <t t-if="state.companyProfile.basics.city">, <t t-esc="state.companyProfile.basics.city"/></t>
+                                                        <t t-if="state.companyProfile.basics.state">, <t t-esc="state.companyProfile.basics.state"/></t>
+                                                        <t t-if="state.companyProfile.basics.pincode"> - <t t-esc="state.companyProfile.basics.pincode"/></t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="detail-item">
+                                                    <div class="detail-label">Region</div>
+                                                    <div class="detail-value">
+                                                        <t t-esc="state.companyProfile.basics.region || 'N/A'"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- CONTACT INFO TAB -->
+                                <div t-if="state.profileActiveTab === 'contact'">
+                                    <div class="profile-section">
+                                        <h4 class="section-title mb-4">Contact Information</h4>
+                                        
+                                        <div class="row">
+                                            <!-- Email Addresses -->
+                                            <div class="col-md-6 mb-4">
+                                                <h5 class="subsection-title">
+                                                    <i class="fa fa-envelope-o text-primary mr-2"></i>Email Addresses
+                                                </h5>
+                                                <t t-if="state.companyProfile.basics.email and state.companyProfile.basics.email.length > 0">
+                                                    <t t-foreach="state.companyProfile.basics.email" t-as="email" t-key="email_index">
+                                                        <div class="contact-info-item">
+                                                            <a t-att-href="'mailto:' + email" class="text-primary">
+                                                                <t t-esc="email"/>
+                                                            </a>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="text-muted">No email addresses available</div>
+                                                </t>
+                                            </div>
+                                            
+                                            <!-- Phone Numbers -->
+                                            <div class="col-md-6 mb-4">
+                                                <h5 class="subsection-title">
+                                                    <i class="fa fa-phone text-primary mr-2"></i>Phone Numbers
+                                                </h5>
+                                                <t t-if="state.companyProfile.basics.phone and state.companyProfile.basics.phone.length > 0">
+                                                    <t t-foreach="state.companyProfile.basics.phone" t-as="phone" t-key="phone_index">
+                                                        <div class="contact-info-item">
+                                                            <t t-esc="phone"/>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <div class="text-muted">No phone numbers available</div>
+                                                </t>
+                                            </div>
+                                            
+                                            <!-- Physical Address -->
+                                            <div class="col-12">
+                                                <h5 class="subsection-title">
+                                                    <i class="fa fa-map-marker text-primary mr-2"></i>Physical Address
+                                                </h5>
+                                                <div class="contact-info-item">
+                                                    <div><t t-esc="state.companyProfile.basics.address1 or ''"/></div>
+                                                    <div t-if="state.companyProfile.basics.address2">
+                                                        <t t-esc="state.companyProfile.basics.address2"/>
+                                                    </div>
+                                                    <div>
+                                                        <t t-esc="state.companyProfile.basics.city or ''"/>
+                                                        <t t-if="state.companyProfile.basics.state">, <t t-esc="state.companyProfile.basics.state"/></t>
+                                                        <t t-if="state.companyProfile.basics.pincode"> - <t t-esc="state.companyProfile.basics.pincode"/></t>
+                                                    </div>
+                                                    <div><t t-esc="state.companyProfile.basics.country or ''"/></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- COMPANY LOCATION TAB -->
+                                <div t-if="state.profileActiveTab === 'location'">
+                                    <div class="profile-section">
+                                        <h4 class="section-title mb-4">
+                                            <i class="fa fa-map-marker text-primary mr-2"></i>Company Locations
+                                        </h4>
+                                        
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- Headquarters Card -->
+                                                <div t-if="state.companyProfile.basics.address1 or state.companyProfile.basics.city" 
+                                                    class="location-card mb-4">
+                                                    <div class="location-card-header">
+                                                        <i class="fa fa-building mr-2"></i>
+                                                        <span t-esc="state.companyProfile.basics.organization_name"/> - Headquarters
+                                                    </div>
+                                                    <div class="location-card-body">
+                                                        <div class="address-details">
+                                                            <div t-if="state.companyProfile.basics.address1" class="address-line">
+                                                                <t t-esc="state.companyProfile.basics.address1"/>
+                                                            </div>
+                                                            <div t-if="state.companyProfile.basics.address2" class="address-line">
+                                                                <t t-esc="state.companyProfile.basics.address2"/>
+                                                            </div>
+                                                            <div class="address-line">
+                                                                <t t-if="state.companyProfile.basics.city">
+                                                                    <t t-esc="state.companyProfile.basics.city"/>
+                                                                </t>
+                                                                <t t-if="state.companyProfile.basics.state">
+                                                                    , <t t-esc="state.companyProfile.basics.state"/>
+                                                                </t>
+                                                                <t t-if="state.companyProfile.basics.pincode">
+                                                                    - <t t-esc="state.companyProfile.basics.pincode"/>
+                                                                </t>
+                                                            </div>
+                                                            <div t-if="state.companyProfile.basics.country" class="address-line">
+                                                                <t t-esc="state.companyProfile.basics.country"/>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- View on Map Button -->
+                                                        <div class="map-action mt-3">
+                                                            <!-- <button class="btn btn-sm btn-outline-primary mt-3" 
+                                                                    t-on-click="() =&gt; this._openGoogleMaps(state.companyProfile.basics)">
+                                                                <i class="fa fa-map-o mr-2"></i> View on Map
+                                                                <i class="fa fa-external-link ml-2" ></i>
+                                                            </button> -->
+
+                                                            <button class="btn btn-sm btn-outline-primary mt-3" 
+                                                                                t-on-click="() =&gt; this._openGoogleMaps(state.companyProfile.basics)">
+                                                                            <i class="fa fa-map-marker mr-1"></i> View Map
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Additional Locations -->
+                                                <div t-if="state.companyProfile.basics.additional_locations and state.companyProfile.basics.additional_locations.length > 0" 
+                                                    class="additional-locations mt-4">
+                                                    <h5 class="subsection-title mb-3">
+                                                        <i class="fa fa-building-o text-primary mr-2"></i>
+                                                        Other Locations (<t t-esc="state.companyProfile.basics.additional_locations.length"/>)
+                                                    </h5>
+                                                    <div class="row">
+                                                        <t t-foreach="getVisibleLocations()" t-as="location" t-key="location.address1">
+                                                            <div class="col-md-6 mb-3">
+                                                                <div class="location-card location-card-sm">
+                                                                    <div class="location-card-body p-3">
+                                                                        <div class="address-details small">
+
+                                                                            <div t-if="location.address1" class="font-weight-bold">
+                                                                                <t t-esc="location.address1.split(',')[0]"/>
+                                                                            </div>
+
+                                                                            <div class="mt-1">
+                                                                                <t t-esc="location.city or ''"/>
+                                                                                <t t-if="location.state">, <t t-esc="location.state"/></t>
+                                                                                <t t-if="location.pincode"> - <t t-esc="location.pincode"/></t>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <t t-esc="location.country or ''"/>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <button class="btn btn-sm btn-outline-primary mt-3"
+                                                                                t-on-click="() => this._openGoogleMaps(location)">
+                                                                            <i class="fa fa-map-marker mr-1"></i> View Map
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </t>
+                                                        <div t-if="state.companyProfile.basics.additional_locations.length > state.locationLimit"
+                                                            class="text-center mt-3">
+
+                                                            <button class="btn btn-outline-secondary btn-sm"
+                                                                    t-on-click="toggleLocations">
+
+                                                                <t t-if="!state.showAllLocations">Load More</t>
+                                                                <t t-if="state.showAllLocations">Show Less</t>
+
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                
+                                                <!-- No Location Message -->
+                                                <div t-if="!state.companyProfile.basics.address1 and !state.companyProfile.basics.city and 
+                                                        (!state.companyProfile.basics.additional_locations or state.companyProfile.basics.additional_locations.length === 0)" 
+                                                    class="text-center text-muted py-5">
+                                                    <i class="fa fa-map-marker fa-3x mb-3" style="opacity: 0.3;"></i>
+                                                    <p>No location information available</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- KEY EXECUTIVES TAB -->
+                                <div t-if="state.profileActiveTab === 'executives'" class="row">
+                                    <div class="col-12">
+                                        <div class="profile-section">
+                                            <h4 class="section-title mb-4">
+                                                <i class="fa fa-users text-primary mr-2"></i>Key Executives
+                                                <span t-if="state.companyProfile.keyexecutives" class="badge badge-light ml-2">
+                                                    <t t-esc="state.companyProfile.keyexecutives.length"/> Executives
+                                                </span>
+                                            </h4>
+                                            
+                                            <t t-if="state.companyProfile.keyexecutives and state.companyProfile.keyexecutives.length > 0">
+                                                <div class="row">
+                                                    <t t-foreach="state.companyProfile.keyexecutives" t-as="executive" t-key="executive_index">
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="executive-card">
+                                                                <div class="executive-avatar mr-3" 
+                                                                    t-att-style="'background: linear-gradient(135deg, ' + [
+                                                                        '#2563eb', '#3b82f6', '#4f46e5', '#7c3aed', '#9333ea',
+                                                                        '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#059669',
+                                                                        '#0891b2', '#2563eb'
+                                                                    ][executive_index % 12] + ' 0%, ' + [
+                                                                        '#3b82f6', '#60a5fa', '#6366f1', '#8b5cf6', '#a855f7',
+                                                                        '#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981',
+                                                                        '#06b6d4', '#3b82f6'
+                                                                    ][executive_index % 12] + ' 100%);'">
+                                                                    <t t-esc="this._getInitials(executive.name)"/>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="executive-name">
+                                                                        <t t-esc="executive.name"/>
+                                                                    </div>
+                                                                    <div class="executive-role">
+                                                                        <t t-esc="executive.designation"/>
+                                                                    </div>
+                                                                    <div t-if="executive.email" class="executive-email small text-muted mt-1">
+                                                                        <i class="fa fa-envelope-o mr-1"></i>
+                                                                        <a t-att-href="'mailto:' + executive.email" class="text-primary">
+                                                                            <t t-esc="executive.email"/>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div t-if="executive.linkedin_profile" class="executive-linkedin small text-muted mt-1">
+                                                                        <i class="fa fa-linkedin mr-1"></i>
+                                                                        <a t-att-href="executive.linkedin_profile" target="_blank" class="text-primary">
+                                                                            LinkedIn Profile
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <div class="text-center text-muted py-5">
+                                                    <i class="fa fa-users fa-3x mb-3" style="opacity: 0.3;"></i>
+                                                    <p>No executive information available</p>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RFP TAB -->
+        <div t-if="state.activeTab === 'rfp'">
+
+            <h2>Request For Proposal</h2>
+            <iframe 
+                src="https://demobizvibe-prelive.portal.infinian.team/odoo-buyer-rfp-dashboard/"
+                style="width:100%; height:200vh; border:none;"
+                allowfullscreen="true">
+            </iframe>
+
+        </div>
+
+
+        <!-- RFI TAB -->
+        <div t-if="state.activeTab === 'rfi'">
+
+            <h2>Request For Information</h2>
+             <iframe 
+                src="https://demobizvibe-prelive.portal.infinian.team/odoo-buyer-rfi-dashboard/"
+                style="width:100%; height:200vh; border:none;"
+                allowfullscreen="true">
+            </iframe>
+
+        </div>
+
+    </div>
+
+</div>
+
+</t>
+
+</templates>

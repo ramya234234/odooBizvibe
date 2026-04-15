@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizVibe Smart AI - Odoo App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: #f7fafc;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero .tagline {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero .description {
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        /* Features Section */
+        .section {
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a202c;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #718096;
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #4a5568;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            background: white;
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            margin: 20px 0;
+            color: #718096;
+        }
+
+        .screenshot-placeholder h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        /* Installation Section */
+        .installation {
+            background: #1a202c;
+            color: white;
+        }
+
+        .installation-title {
+            color: white;
+        }
+
+        .step-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .step-number {
+            background: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .step h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background: #f7fafc;
+        }
+
+        .price-card {
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .price {
+            font-size: 4em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .price-note {
+            color: #718096;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .price-features {
+            text-align: left;
+            margin-top: 30px;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .price-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* Support Section */
+        .support {
+            background: white;
+            text-align: center;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .support-item {
+            padding: 30px;
+        }
+
+        .support-item h3 {
+            font-size: 1.3em;
+            margin: 15px 0;
+            color: #2d3748;
+        }
+
+        .support-item a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .support-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a202c;
+            color: #a0aec0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero .tagline {
+                font-size: 1.2em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>🚀 BizVibe Smart AI</h1>
+            <p class="tagline">Find B2B Company Insights & Enrich Data with AI</p>
+            <p class="description">
+                Transform your Odoo CRM with intelligent company search and instant data enrichment. 
+                Leverage AI-powered insights to find better prospects and close deals faster.
+            </p>
+            <div class="badges">
+                <span class="badge">✨ AI-Powered Search</span>
+                <span class="badge">⚡ One-Click Enrichment</span>
+                <span class="badge">🎯 CRM Integration</span>
+                <span class="badge">📊 Market Intelligence</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Powerful Features</h2>
+            <p class="section-subtitle">Everything you need to supercharge your sales and prospecting workflow</p>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Search</h3>
+                    <p>Search for companies using natural language queries. Get AI-powered results ranked by relevance.</p>
+                    <ul class="feature-list">
+                        <li>Natural language processing</li>
+                        <li>Advanced filtering options</li>
+                        <li>Real-time search results</li>
+                        <li>Beautiful modern interface</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Instant Enrichment</h3>
+                    <p>Update your Contact and Lead records with comprehensive company data in one click.</p>
+                    <ul class="feature-list">
+                        <li>Automatic field mapping</li>
+                        <li>Industry classification</li>
+                        <li>Revenue & employee data</li>
+                        <li>Batch processing support</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Seamless CRM Integration</h3>
+                    <p>Launch searches directly from your Contacts or Leads. Context-aware and workflow-optimized.</p>
+                    <ul class="feature-list">
+                        <li>One-click from any record</li>
+                        <li>Smart context detection</li>
+                        <li>Quick import to CRM</li>
+                        <li>No workflow disruption</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>AI-Powered Insights</h3>
+                    <p>Get intelligent summaries and recommendations powered by advanced AI algorithms.</p>
+                    <ul class="feature-list">
+                        <li>Market landscape analysis</li>
+                        <li>Company comparisons</li>
+                        <li>Business insights</li>
+                        <li>Trend identification</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Built with modern OWL framework for Odoo 17. Optimized for speed and performance.</p>
+                    <ul class="feature-list">
+                        <li>Responsive interface</li>
+                        <li>Instant search results</li>
+                        <li>Smooth animations</li>
+                        <li>Mobile-friendly design</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Compliant</h3>
+                    <p>Enterprise-grade security with proper access controls and data protection.</p>
+                    <ul class="feature-list">
+                        <li>Role-based access control</li>
+                        <li>Secure API integration</li>
+                        <li>Data privacy compliance</li>
+                        <li>Audit trail support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="section screenshots">
+        <div class="container">
+            <h2 class="section-title">See It In Action</h2>
+            <p class="section-subtitle">Beautiful, intuitive interface designed for productivity</p>
+            
+            <div class="screenshot-placeholder">
+                <h3>📸 Screenshot: Smart Search Interface</h3>
+                <p>Add your application screenshots here showing the smart search interface, results page, and company profiles.</p>
+                <p><em>Recommended: 1200x800px PNG images</em></p>
+            </div>
+
+            <div class="screenshot-placeholder">
+                <h3>📸 Screenshot: Company Profile View</h3>
+                <p>Add screenshots showing detailed company information, enrichment features, and CRM integration.</p>
+                <p><em>Tip: Show real data flow from search to CRM import</em></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section class="section installation">
+        <div class="container">
+            <h2 class="section-title installation-title">Quick Installation</h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.8);">Get started in minutes with these simple steps</p>
+            
+            <div class="step-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Install Module</h3>
+                    <p>Go to Apps menu in Odoo, update the apps list, and search for "BizVibe Smart AI"</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Configure API</h3>
+                    <p>Navigate to Settings → General Settings and enter your BizVibe API credentials</p>
+                    <div class="code-block">Optional: Works with mock data for testing</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Start Searching</h3>
+                    <p>Click "BizVibe Intelligence" from the main menu or use the enrich button on any Contact/Lead</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Import & Enrich</h3>
+                    <p>Select companies from search results and import them as Contacts or Leads with one click</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section pricing">
+        <div class="container">
+            <h2 class="section-title">Pricing</h2>
+            <p class="section-subtitle">Simple, transparent pricing for everyone</p>
+            
+            <div class="price-card">
+                <h3>Free & Open Source</h3>
+                <div class="price">$0</div>
+                <p class="price-note">Free forever • No hidden costs • No credit card required</p>
+                
+                <ul class="feature-list price-features">
+                    <li>✓ Unlimited searches (with mock data)</li>
+                    <li>✓ Full CRM integration</li>
+                    <li>✓ One-click data enrichment</li>
+                    <li>✓ AI-powered insights</li>
+                    <li>✓ Modern OWL interface</li>
+                    <li>✓ Community support</li>
+                    <li>✓ Regular updates</li>
+                    <li>✓ LGPL-3 licensed</li>
+                </ul>
+                
+                <p style="margin-top: 30px; color: #718096;">
+                    <strong>Note:</strong> BizVibe API subscription required for production use with real data. 
+                    Module includes comprehensive mock data for testing and demo purposes.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="section support">
+        <div class="container">
+            <h2 class="section-title">Support & Resources</h2>
+            <p class="section-subtitle">We're here to help you succeed</p>
+            
+            <div class="support-grid">
+                <div class="support-item">
+                    <div class="feature-icon">📧</div>
+                    <h3>Email Support</h3>
+                    <p>Get help from our team</p>
+                    <a href="mailto:support@yourdomain.com">support@yourdomain.com</a>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #718096;">
+                        <em>(PLACEHOLDER - Update before submission)</em>
+                    </p>
+                </div>
+
+                <div class="support-item">
+                    <div class="feature-icon">📚</div>
+                    <h3>Documentation</h3>
+                    <p>Comprehensive guides</p>
+                    <a href="https://www.bizvibe.com/docs">View Docs</a>
+                </div>
+
+                <div class="support-item">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Website</h3>
+                    <p>Learn more about BizVibe</p>
+                    <a href="https://www.bizvibe.com">www.bizvibe.com</a>
+                </div>
+
+                <div class="support-item">
+                    <div class="feature-icon">💬</div>
+                    <h3>Community</h3>
+                    <p>Join the discussion</p>
+                    <a href="#">Community Forum</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Supercharge Your CRM?</h2>
+            <p>Install BizVibe Smart AI today and start finding better prospects in seconds</p>
+            <a href="#" class="cta-button">Install Now - It's Free!</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p><strong>BizVibe Smart AI for Odoo</strong></p>
+            <p>Version 17.1.0.0 • Licensed under LGPL-3</p>
+            <p>Author: Sandeep Reddy</p>
+            <p style="margin-top: 20px;">Made with ❤️ for the Odoo Community</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bizvibe_search_wizard,bizvibe.search.wizard,model_bizvibe_search_wizard,base.group_user,1,1,1,1
+access_bizvibe_search_result,bizvibe.search.result,model_bizvibe_search_result,base.group_user,1,1,1,1

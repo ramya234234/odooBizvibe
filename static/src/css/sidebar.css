@@ -1,0 +1,41 @@
+.bizvibe_layout{
+    display:flex;
+    height:100%;
+}
+
+.bizvibe_sidebar{
+    width:220px;
+    background:#ffffff;
+    border-right:1px solid #e5e7eb;
+    padding:15px;
+}
+
+.bizvibe_sidebar_title{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:20px;
+}
+
+.bizvibe_menu_item{
+    padding:10px 12px;
+    border-radius:6px;
+    margin-bottom:5px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.bizvibe_menu_item:hover{
+    background:#f1f5f9;
+}
+
+.bizvibe_menu_item.active{
+    background:#7c7bad;
+    color:white;
+}
+
+.bizvibe_content{
+    flex:1;
+    padding:20px;
+}
