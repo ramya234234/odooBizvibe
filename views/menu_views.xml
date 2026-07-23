@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <menuitem id="menu_bizvibe_root" 
-              name="BizVibe" 
-              action="action_bizvibe_smart_search_client"
-              sequence="10"
-              groups="base.group_user"/>
-</odoo>
